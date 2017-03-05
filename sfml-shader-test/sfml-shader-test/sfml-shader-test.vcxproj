@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Shader Effects\LightEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader Effects\PixelStormEffect.cpp" />
     <ClCompile Include="Shader Effects\ShaderEffect.cpp" />
@@ -164,10 +165,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\blink.frag" />
+    <None Include="shaders\lighting.frag" />
+    <None Include="shaders\lighting.vert" />
     <None Include="shaders\storm.vert" />
     <None Include="shaders\wave.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Shader Effects\LightEffect.h" />
+    <ClInclude Include="Lights\Light.h" />
     <ClInclude Include="Shader Effects\PixelStormEffect.h" />
     <ClInclude Include="Shader Effects\ShaderEffect.h" />
     <ClInclude Include="ShaderManager.h" />

@@ -2,7 +2,6 @@
 
 /*
  * Sets up the shader effect.
- * @param sprite the sprite that we want to affect with this shader.
  */
 PixelStormEffect::PixelStormEffect() : ShaderEffect("Stormy!")
 {}

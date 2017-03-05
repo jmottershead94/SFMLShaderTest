@@ -17,14 +17,29 @@ int main()
 		return -1;
 	texture.setSmooth(true);
 
+	std::vector<sf::Sprite> sprites;
+
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setPosition(400, 300);
+	sprite.setPosition(200, 100);
+
+	sf::Sprite sprite2;
+	sprite2.setTexture(texture);
+	sprite2.setPosition(400, 250);
+
+	sf::Sprite sprite3;
+	sprite3.setTexture(texture);
+	sprite3.setPosition(600, 400);
+
+	sprites.push_back(sprite);
+	sprites.push_back(sprite2);
+	sprites.push_back(sprite3);
 
 	// Setup some new shader effects.
 	ShaderManager shaderManager(window);
 	shaderManager.addEffect(new PixelStormEffect());
-	shaderManager.addEffect(new WaveEffect(sprite));
+	shaderManager.addEffect(new WaveEffect(sprites[1]));
+	shaderManager.addEffect(new LightEffect(sprites));
 
 	sf::Text description("Current Effect: " + shaderManager.currentShaderName(), font, 20);
 	description.setPosition(20, 555);

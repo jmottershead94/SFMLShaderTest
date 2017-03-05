@@ -2,6 +2,7 @@
 
 #include "Shader Effects/PixelStormEffect.h"
 #include "Shader Effects/WaveEffect.h"
+#include "Shader Effects/LightEffect.h"
 #include <vector>
 
 /*

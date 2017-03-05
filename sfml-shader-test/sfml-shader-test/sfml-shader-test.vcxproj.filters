@@ -30,11 +30,16 @@
     <ClCompile Include="Shader Effects\WaveEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shader Effects\LightEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\wave.vert" />
     <None Include="shaders\blink.frag" />
     <None Include="shaders\storm.vert" />
+    <None Include="shaders\lighting.frag" />
+    <None Include="shaders\lighting.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderManager.h">
@@ -47,6 +52,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shader Effects\WaveEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lights\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader Effects\LightEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
