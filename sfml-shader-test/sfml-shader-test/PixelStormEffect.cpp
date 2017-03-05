@@ -5,8 +5,7 @@
  * @param sprite the sprite that we want to affect with this shader.
  */
 PixelStormEffect::PixelStormEffect() : ShaderEffect("Stormy!")
-{
-}
+{}
 
 /*
  * Notifies us if this shader has been loaded successfully or not.

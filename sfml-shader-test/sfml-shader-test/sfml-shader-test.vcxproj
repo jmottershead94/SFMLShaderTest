@@ -159,6 +159,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PixelStormEffect.cpp" />
     <ClCompile Include="ShaderEffect.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="WaveEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="PixelStormEffect.h" />
     <ClInclude Include="ShaderEffect.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="WaveEffect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

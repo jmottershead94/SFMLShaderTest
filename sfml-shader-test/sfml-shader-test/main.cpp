@@ -1,5 +1,4 @@
-#include "PixelStormEffect.h"
-#include "WaveEffect.h"
+#include "ShaderManager.h"
 #include <vector>
 
 /*
@@ -23,18 +22,17 @@ int main()
 	sprite.setTexture(texture);
 	sprite.setPosition(400, 300);
 
-	std::vector<ShaderEffect*> effects;
-	effects.push_back(new PixelStormEffect());
-	effects.push_back(new WaveEffect(sprite));
-	std::size_t current = 0;
+	// Setup some new shader effects.
+	ShaderManager shaderManager(window);
+	shaderManager.addEffect(new PixelStormEffect());
+	shaderManager.addEffect(new WaveEffect(sprite));
 
-	sf::Text description("Current Effect: " + effects[current]->getName(), font, 20);
+	sf::Text description("Current Effect: " + shaderManager.currentShaderName(), font, 20);
 	description.setPosition(20, 555);
 	description.setFillColor(sf::Color::White);
 
-	// Load the shaders in.
-	for (std::size_t i = 0; i < effects.size(); ++i)
-		effects[i]->load();
+	// Load in the shader files.
+	shaderManager.load();
 
 	sf::Clock clock;
 
@@ -58,23 +56,17 @@ int main()
 					}
 					case sf::Keyboard::Left:
 					{
-						if (current == 0)
-							current = effects.size() - 1;
-						else
-							current--;
-
-						description.setString("Current Effect: " + effects[current]->getName());
+						// Go to the previous shader.
+						shaderManager.previousShader();
+						description.setString("Current Effect: " + shaderManager.currentShaderName());
 
 						break;
 					}
 					case sf::Keyboard::Right:
 					{
-						if (current == effects.size() - 1)
-							current = 0;
-						else
-							current++;
-
-						description.setString("Current Effect: " + effects[current]->getName());
+						// Go to the next shader.
+						shaderManager.nextShader();
+						description.setString("Current Effect: " + shaderManager.currentShaderName());
 
 						break;
 					}
@@ -84,19 +76,19 @@ int main()
 			}
 		}
 
-		// Update the current example
+		// Update all of the shaders.
 		float x = static_cast<float>(sf::Mouse::getPosition(window).x) / window.getSize().x;
 		float y = static_cast<float>(sf::Mouse::getPosition(window).y) / window.getSize().y;
-		effects[current]->update(clock.getElapsedTime().asSeconds(), x, y);
+		shaderManager.update(clock.getElapsedTime().asSeconds(), x, y);
 
 		window.clear(sf::Color::Black);
-		window.draw(*effects[current]);
+
+		// Render the effects for the shaders.
+		shaderManager.draw();
+
 		window.draw(description);
 		window.display();
 	}
-
-	for (std::size_t i = 0; i < effects.size(); ++i)
-		delete effects[i];
 
 	return 0;
 }

@@ -20,7 +20,7 @@ class ShaderEffect : public sf::Drawable
 		 * Provides access to the name of this shader.
 		 * @return const std::string& the name of this shader.
 		 */
-		inline std::string& const getName() { return _name; }
+		inline std::string const getName() { return _name; }
 		
 	protected:
 		explicit ShaderEffect(const std::string& name);
