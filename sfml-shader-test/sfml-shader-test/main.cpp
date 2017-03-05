@@ -1,5 +1,4 @@
 #include "ShaderManager.h"
-#include <vector>
 
 /*
  * Entry point for the main application.

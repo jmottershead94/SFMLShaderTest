@@ -157,10 +157,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PixelStormEffect.cpp" />
-    <ClCompile Include="ShaderEffect.cpp" />
+    <ClCompile Include="Shader Effects\PixelStormEffect.cpp" />
+    <ClCompile Include="Shader Effects\ShaderEffect.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="WaveEffect.cpp" />
+    <ClCompile Include="Shader Effects\WaveEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\blink.frag" />
@@ -168,10 +168,10 @@
     <None Include="shaders\wave.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PixelStormEffect.h" />
-    <ClInclude Include="ShaderEffect.h" />
+    <ClInclude Include="Shader Effects\PixelStormEffect.h" />
+    <ClInclude Include="Shader Effects\ShaderEffect.h" />
     <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="WaveEffect.h" />
+    <ClInclude Include="Shader Effects\WaveEffect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
