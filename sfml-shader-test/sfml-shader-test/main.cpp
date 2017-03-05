@@ -30,7 +30,7 @@ int main()
 
 	sf::Text description("Current Effect: " + effects[current]->getName(), font, 20);
 	description.setPosition(20, 555);
-	description.setFillColor(sf::Color::Black);
+	description.setFillColor(sf::Color::White);
 
 	// Load the shaders in.
 	for (std::size_t i = 0; i < effects.size(); ++i)
@@ -89,7 +89,7 @@ int main()
 		float y = static_cast<float>(sf::Mouse::getPosition(window).y) / window.getSize().y;
 		effects[current]->update(clock.getElapsedTime().asSeconds(), x, y);
 
-		window.clear(sf::Color(255, 128, 0));
+		window.clear(sf::Color::Black);
 		window.draw(*effects[current]);
 		window.draw(description);
 		window.display();
