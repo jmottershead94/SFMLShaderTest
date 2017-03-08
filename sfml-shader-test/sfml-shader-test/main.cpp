@@ -39,7 +39,7 @@ int main()
 	ShaderManager shaderManager(window);
 	shaderManager.addEffect(new PixelStormEffect());
 	shaderManager.addEffect(new WaveEffect(sprites[1]));
-	shaderManager.addEffect(new LightEffect(sprites));
+	shaderManager.addEffect(new LightEffect(sprites, 2));
 
 	sf::Text description("Current Effect: " + shaderManager.currentShaderName(), font, 20);
 	description.setPosition(20, 555);
