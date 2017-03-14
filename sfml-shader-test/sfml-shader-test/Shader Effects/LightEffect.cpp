@@ -94,15 +94,10 @@ void LightEffect::onUpdate(float time, float x, float y)
 		sf::Vector3f pos(_sprites[i].getPosition().x, _sprites[i].getPosition().y, 1.0f);
 		sf::Vector2f dim(_sprites[i].getGlobalBounds().width, _sprites[i].getGlobalBounds().height);
 
-		sf::Vector2f vecMax(pos.x + (dim.x * 0.5f), pos.y + (dim.y * 0.5f));
-		sf::Vector2f vecMin(pos.x - (dim.x * 0.5f), pos.y - (dim.y * 0.5f));
+		sf::Vector2f vecMax(pos.x + dim.x, pos.y + dim.y);
+		sf::Vector2f vecMin(pos.x, pos.y);
 		_shader.setUniform("segment.vecMax", vecMax);
 		_shader.setUniform("segment.vecMin", vecMin);
-
-		//const sf::Glsl::Vec3 position(pos);
-		//_shader.setUniform("position", position);
-
-		//const sf::Glsl::Vec2 dimension(dim);
 	}
 }
 
