@@ -1,56 +1,66 @@
+/*
+ * This shader will be responsible for providing lighting in the game.
+ */
+
+/*
+ * Holds information about lights.
+ */
+struct Light
+{
+	vec2 position;
+	vec2 direction;
+	vec3 colour;
+};
+
+/*
+ * Holds information about segments.
+ * This will be filled with the maximum and minimum
+ * points of the sprites these lights can interact with.
+ */
+struct Segment
+{
+	vec2 vecMax;
+	vec2 vecMin;
+};
+
+// Function Prototypes.
+bool rayIntersect(vec2 point, Segment area);
+
+// Variables to setup in the .cpp files.
 uniform sampler2D texture;
+uniform Light light;
+uniform Segment segment;
+uniform float time;
 
-// Light Variables.
-uniform vec3 lightPosition[2];
-uniform vec3 lightColour[2];
-uniform float alpha[2];
-
-// Light Affected Object.
-uniform float width;
-uniform float height;
-//uniform vec2 dimension;
-
-///*
-// * This will allow us to determine the distance between two points.
-// * @param pointOne the first point to check distance against pointTwo.
-// * @param pointTwo the second point to check distance against pointOne.
-// * @return float the distance between these two points (i.e. the hypotenuse).
-// */
-//float distance(vec2 pointOne, vec2 pointTwo)
-//{
-//	float result = 0.0f;
-//	float x = (pointTwo.x - pointOne.x) * (pointTwo.x - pointOne.x);
-//	float y = (pointTwo.y - pointOne.y) * (pointTwo.y - pointOne.y);
-//
-//	result = sqrt(x + y);
-//
-//	return result;
-//}
-//
-//vec2 getCentre()
-//{
-//	
-//}
-
+/*
+ * Entry point for the shader.
+ */
 void main()
 {
-	int numberOfLights = 2;
 	vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
-	vec4 currentLight = pixel;
-
-	for(int i = 0; i < numberOfLights; ++i)
-	{		
-		float distance = sqrt(pow(gl_FragCoord.x - lightPosition[i].x, 2.0f) + pow(gl_FragCoord.y - lightPosition[i].y, 2.0f));
-
-		if (floor(lightPosition[i].x) == floor(gl_FragCoord.x) && floor(lightPosition[i].y) == floor(gl_FragCoord.y)) 
-			distance = 0.1f;
-
-		if (distance > lightPosition[i].z) 
-			distance = lightPosition[i].z;
-
-		vec2 pos = gl_TexCoord[0].xy; 
-		//currentLight = mix(texture2D(texture, pos), pixel, 1.0f - (distance / lightPosition[i].z)); 
-	}
+	vec4 finalColour = pixel;
+	vec2 ray = light.position + (light.direction * time);
 	
-	gl_FragColor = currentLight;
+	if(rayIntersect(ray, segment))
+	{
+		finalColour += vec4(light.colour, 1.0f);
+	}
+
+	gl_FragColor = finalColour;
+}
+
+/*
+ * Simple point to AABB collision check, helps to check if a ray point
+ * has intersected with a target.
+ * @param point the point to test against this segment.
+ * @param area the segment to check if the point is inside.
+ * @return bool if the point lies inside of the segment.
+ */
+bool rayIntersect(vec2 point, Segment area)
+{
+	return
+	(
+		(point.x >= area.vecMin.x && point.x <= area.vecMax.x) &&
+		(point.y >= area.vecMin.y && point.y <= area.vecMax.y)
+	);
 }

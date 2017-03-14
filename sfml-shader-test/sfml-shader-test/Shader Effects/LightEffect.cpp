@@ -34,18 +34,21 @@ bool LightEffect::onLoad()
 
 		// Calculating random colours.
 		sf::Color randColour;
-		randColour.r = std::rand() % 255;
-		randColour.g = std::rand() % 255;
-		randColour.b = std::rand() % 255;
+		randColour.r = 255;
+		randColour.g = 0;
+		randColour.b = 0;
+		//randColour.r = std::rand() % 255;
+		//randColour.g = std::rand() % 255;
+		//randColour.b = std::rand() % 255;
 
 		Light* light = new Light(randPosition, randColour);
 		light->setupBulb();
 		_lights.push_back(light);
 	}
 
-	if (!_shader.loadFromFile("./shaders/lighting.frag", sf::Shader::Type::Fragment))
+	if (!_shader.loadFromFile("./shaders/lighting.frag", sf::Shader::Fragment))
 		return false;
-
+	
 	_shader.setUniform("texture", sf::Shader::CurrentTexture);
 
 	return true;
@@ -59,6 +62,8 @@ bool LightEffect::onLoad()
  */
 void LightEffect::onUpdate(float time, float x, float y)
 {
+	_shader.setUniform("time", time);
+
 	for (size_t i = 0; i < _lights.size(); ++i)
 	{
 		// -----------------------------------------------------------------------------------------------------
@@ -74,24 +79,13 @@ void LightEffect::onUpdate(float time, float x, float y)
 		//
 
 		// Accessing light values once so there are less calls to _lights[i] with each iteration.
-		const sf::Vector3f position(_lights[i]->position().x, _lights[i]->position().y, _lights[i]->position().z);
+		const sf::Vector2f position(_lights[i]->position().x, _lights[i]->position().y);
 		const sf::Vector3f colour(_lights[i]->colour().r, _lights[i]->colour().g, _lights[i]->colour().b);
 		const float a = static_cast<float>(_lights[i]->colour().a);
 
-		// Passing the light's position into the shader file.
-		const float currentPosition[3] = { position.x, position.y, position.z };
-		const float* positionPointer = currentPosition;
-		_shader.setUniformArray("lightPosition", positionPointer, _lights.size());
-
-		// Passing the light's colour into the shader file.
-		const float currentColour[3] = { colour.x, colour.y, colour.z };
-		const float* colourPointer = currentColour;
-		_shader.setUniformArray("lightColour", colourPointer, _lights.size());
-
-		// Passing the light's alpha value into the shader file.
-		const float currentAlpha[1] = { a };
-		const float* alphaPointer = currentAlpha;
-		_shader.setUniformArray("alpha", alphaPointer, _lights.size());
+		_shader.setUniform("light.position", position);
+		_shader.setUniform("light.direction", sf::Vector2f(0.0f, 1.0f));
+		_shader.setUniform("light.colour", colour);
 	}
 
 	// Render each of the sprites with this lighting shader.
@@ -100,8 +94,11 @@ void LightEffect::onUpdate(float time, float x, float y)
 		sf::Vector3f pos(_sprites[i].getPosition().x, _sprites[i].getPosition().y, 1.0f);
 		sf::Vector2f dim(_sprites[i].getGlobalBounds().width, _sprites[i].getGlobalBounds().height);
 
-		_shader.setUniform("width", dim.x);
-		_shader.setUniform("height", dim.y);
+		sf::Vector2f vecMax(pos.x + (dim.x * 0.5f), pos.y + (dim.y * 0.5f));
+		sf::Vector2f vecMin(pos.x - (dim.x * 0.5f), pos.y - (dim.y * 0.5f));
+		_shader.setUniform("segment.vecMax", vecMax);
+		_shader.setUniform("segment.vecMin", vecMin);
+
 		//const sf::Glsl::Vec3 position(pos);
 		//_shader.setUniform("position", position);
 
@@ -123,17 +120,6 @@ void LightEffect::onDraw(sf::RenderTarget& target, sf::RenderStates states) cons
 		// Render each of the sprites with this lighting shader.
 		for (size_t i = 0; i < _sprites.size(); ++i)
 		{
-			//sf::Vector3f pos(_sprites[i].getPosition().x, _sprites[i].getPosition().y, 1.0f);
-			//sf::Vector2f dim(_sprites[i].getGlobalBounds().width, _sprites[i].getGlobalBounds().height);
-
-			//const sf::Glsl::Vec3 position(pos);
-			//_shader.setUniform("position", position);
-
-			//const sf::Glsl::Vec2 dimension(dim);
-			//_shader.setUniform("dimension", dimension);
-			//_shader.setUniform("width", dim.x);
-			//_shader.setUniform("height", dim.y);
-
 			target.draw(_sprites[i], states);
 		}
 	}

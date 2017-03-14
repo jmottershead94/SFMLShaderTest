@@ -166,6 +166,7 @@
   <ItemGroup>
     <None Include="shaders\blink.frag" />
     <None Include="shaders\lighting.frag" />
+    <None Include="shaders\lighting.vert" />
     <None Include="shaders\storm.vert" />
     <None Include="shaders\wave.vert" />
   </ItemGroup>

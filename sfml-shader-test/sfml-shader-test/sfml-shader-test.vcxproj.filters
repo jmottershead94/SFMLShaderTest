@@ -39,6 +39,7 @@
     <None Include="shaders\blink.frag" />
     <None Include="shaders\storm.vert" />
     <None Include="shaders\lighting.frag" />
+    <None Include="shaders\lighting.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderManager.h">
