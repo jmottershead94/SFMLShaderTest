@@ -45,7 +45,7 @@ class Light
 		{
 			_point.setFillColor(sf::Color::Yellow);
 			_point.setPosition(_position.x, _position.y);
-			_point.setRadius(5.0f);
+			_point.setRadius(_radius * 0.5f);
 		}
 
 		/*
@@ -53,7 +53,7 @@ class Light
 		 */
 		void updateBulb()
 		{
-			_point.setPosition(_position.x, _position.y);
+			_point.setPosition(_position.x - (_radius * 0.5f), _position.y - (_radius * 0.5f));
 		}
 
 		/*

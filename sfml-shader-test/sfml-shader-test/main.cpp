@@ -17,11 +17,16 @@ int main()
 		return -1;
 	texture.setSmooth(true);
 
+	sf::Texture bgTexture;
+	if (!bgTexture.loadFromFile("../assets/art/swamp.png"))
+		return -1;
+	bgTexture.setSmooth(true);
+
 	std::vector<sf::Sprite> sprites;
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setPosition(200, 100);
+	sprite.setPosition(200, 250);
 
 	sf::Sprite sprite2;
 	sprite2.setTexture(texture);
@@ -29,17 +34,24 @@ int main()
 
 	sf::Sprite sprite3;
 	sprite3.setTexture(texture);
-	sprite3.setPosition(600, 400);
+	sprite3.setPosition(525, 250);
 
+	sf::Sprite sprite4;
+	sprite4.setTexture(bgTexture);
+	sprite4.setPosition(0, 0);
+
+	sprites.push_back(sprite4);
 	sprites.push_back(sprite);
 	sprites.push_back(sprite2);
 	sprites.push_back(sprite3);
+
+	sf::Text intensityText("Ambient Intensity: ", font, 20);
 
 	// Setup some new shader effects.
 	ShaderManager shaderManager(window);
 	shaderManager.addEffect(new PixelStormEffect());
 	shaderManager.addEffect(new WaveEffect(sprites[1]));
-	shaderManager.addEffect(new LightEffect(sprites, 2));
+	shaderManager.addEffect(new LightEffect(sprites, 1, font, intensityText));
 
 	sf::Text description("Current Effect: " + shaderManager.currentShaderName(), font, 20);
 	description.setPosition(20, 555);
@@ -99,6 +111,9 @@ int main()
 
 		// Render the effects for the shaders.
 		shaderManager.draw();
+
+		if(shaderManager.currentShaderName() == "Lights!")
+			window.draw(intensityText);
 
 		window.draw(description);
 		window.display();

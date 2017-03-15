@@ -3,11 +3,12 @@
 /*
  * Sets up the shader effect.
  */
-LightEffect::LightEffect(std::vector<sf::Sprite>& sprites, const size_t numberOfLights) : ShaderEffect("Lights!"),
-	_numberOfLights(numberOfLights)
-{
-	_sprites = sprites;
-}
+LightEffect::LightEffect(std::vector<sf::Sprite>& sprites, const size_t numberOfLights, sf::Font& font, sf::Text& extraText) : ShaderEffect("Lights!"),
+	_numberOfLights(numberOfLights),
+	_sprites(sprites),
+	_font(&font),
+	_intensityText(&extraText)
+{}
 
 /*
  * Cleans up pointers.
@@ -24,6 +25,18 @@ LightEffect::~LightEffect()
  */
 bool LightEffect::onLoad()
 {
+	// Display text for demo purposes.
+	_intensityText->setString("Ambient Intensity: ");
+	_intensityText->setPosition(20, 55);
+	_intensityText->setFillColor(sf::Color::White);
+
+	// Setting up the main light source for the scene (ambient lighting).
+	_ambientLight.setPosition(sf::Vector3f(0.0f, 0.0f, 1.0f));
+	sf::Color test(0, 0, 0, 1);
+	_ambientLight.setColour(sf::Color::Transparent);
+	_ambientLight.setIntensity(0.4f);
+	_ambientLight.setDynamic(true);
+
 	for (int i = 0; i < _numberOfLights; ++i)
 	{
 		// Calculating random positions.
@@ -35,13 +48,10 @@ bool LightEffect::onLoad()
 		// Calculating random colours.
 		sf::Color randColour;
 		randColour.r = 255;
-		randColour.g = 25;
-		randColour.b = 128;
-		//randColour.r = std::rand() % 255;
-		//randColour.g = std::rand() % 255;
-		//randColour.b = std::rand() % 255;
+		randColour.g = 0;
+		randColour.b = 0;
 
-		Light* light = new Light(randPosition, randColour, 0.75f);
+		Light* light = new Light(randPosition, randColour, 1.0f);
 		light->setDynamic(true);
 		light->setRadius(20.0f);
 		light->setupBulb();
@@ -64,7 +74,13 @@ bool LightEffect::onLoad()
  */
 void LightEffect::onUpdate(float time, float x, float y)
 {
+	controls();
+
 	_shader.setUniform("time", time);
+
+	const sf::Vector3f ambColour(_ambientLight.colour().r, _ambientLight.colour().g, _ambientLight.colour().b);
+	_shader.setUniform("ambientLight.colour", ambColour);
+	_shader.setUniform("ambientLight.intensity", _ambientLight.intensity());
 
 	for (size_t i = 0; i < _lights.size(); ++i)
 	{
@@ -72,7 +88,7 @@ void LightEffect::onUpdate(float time, float x, float y)
 		//	NORMAL UPDATES.
 		//
 
-		_lights[i]->setPosition(sf::Vector3f(x * 800, y * 600, 1.0f));
+		_lights[i]->setPosition(sf::Vector3f(x * 800.0f, y * 600.0f, 1.0f));
 		_lights[i]->updateBulb();
 
 		// -----------------------------------------------------------------------------------------------------
@@ -102,7 +118,7 @@ void LightEffect::onUpdate(float time, float x, float y)
 void LightEffect::onDraw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.shader = &_shader;
-	
+
 	if (_sprites.size() > 0)
 	{
 		// Render each of the sprites with this lighting shader.
@@ -118,4 +134,19 @@ void LightEffect::onDraw(sf::RenderTarget& target, sf::RenderStates states) cons
 		for (size_t j = 0; j < _lights.size(); ++j)
 			target.draw(_lights[j]->sprite());
 	}
+}
+
+void LightEffect::controls()
+{
+	const float increment = 0.05f;
+
+	if (_ambientLight.isDynamic())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && _ambientLight.intensity() < 1.0f)
+			_ambientLight.setIntensity(_ambientLight.intensity() + increment);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && _ambientLight.intensity() > 0.0f)
+			_ambientLight.setIntensity(_ambientLight.intensity() - increment);
+	}
+
+	_intensityText->setString("Ambient Intensity: " + std::to_string(_ambientLight.intensity()));
 }

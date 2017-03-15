@@ -12,7 +12,7 @@
 class LightEffect : public ShaderEffect
 {
 	public:
-		explicit LightEffect(std::vector<sf::Sprite>& sprites, const size_t numberOfLights);
+		explicit LightEffect(std::vector<sf::Sprite>& sprites, const size_t numberOfLights, sf::Font& font, sf::Text& extraText);
 		~LightEffect();
 
 		bool onLoad();
@@ -22,7 +22,13 @@ class LightEffect : public ShaderEffect
 	private:
 		size_t _numberOfLights;
 		std::vector<sf::Sprite> _sprites;
+		Light _ambientLight;
 		std::vector<Light*> _lights;
 		sf::Shader _shader;
+		sf::RenderWindow* _window;
+		sf::Font* _font;
+		sf::Text* _intensityText;
+
+		void controls();
 };
 

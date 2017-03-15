@@ -13,7 +13,7 @@
  */
 struct AmbientLight
 {
-	vec4 colour;
+	vec3 colour;
 	float intensity;
 };
 
@@ -32,11 +32,13 @@ struct Light
 };
 
 // Function Prototypes.
+vec4 calculateAmbientLight();
 float calculateDistance(vec2 pointOne, vec2 pointTwo);
 vec4 shineLight(Light currentLight);
 
 // Variables to setup in the .cpp files.
 uniform sampler2D texture;
+uniform AmbientLight ambientLight;
 uniform Light light;
 uniform float time;
 
@@ -47,16 +49,21 @@ void main()
 {
 	vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
 	vec4 finalColour = pixel;
-	
-	AmbientLight ambLight;
-	ambLight.colour = vec4(0.0f, 0.0f, 0.0f, 0.25f);
-	ambLight.intensity = 0.5f;
 
-	finalColour += ambLight.colour;
+	// Setup the ambient light for this pixel.
+	finalColour += calculateAmbientLight();
+	finalColour.w *= ambientLight.intensity;
+
+	// Setup the other lights that could be shining on this pixel.
 	finalColour += shineLight(light);
-	finalColour.w *= (light.intensity * ambLight.intensity);
+	finalColour.w *= light.intensity;
 
 	gl_FragColor = finalColour;
+}
+
+vec4 calculateAmbientLight()
+{
+	return vec4(ambientLight.colour.x, ambientLight.colour.y, ambientLight.colour.z, 1.0f);
 }
 
 float calculateDistance(vec2 pointOne, vec2 pointTwo)
@@ -70,7 +77,7 @@ float calculateDistance(vec2 pointOne, vec2 pointTwo)
 }
 
 vec4 shineLight(Light currentLight)
-{	
+{
 	float dis = calculateDistance(currentLight.position, gl_FragCoord.xy);
 
 	if(currentLight.radius >= dis)										// This pixel is out of range.
