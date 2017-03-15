@@ -3,33 +3,41 @@
  */
 
 /*
+ * Defines here for our lighting.
+ */
+#define NUMBER_OF_LIGHTS 1
+#define PI 3.1415
+
+/*
+ * Holds information about the ambient lighting in the scene.
+ */
+struct AmbientLight
+{
+	vec4 colour;
+	float intensity;
+};
+
+/*
  * Holds information about lights.
  */
 struct Light
 {
 	vec2 position;
-	vec2 direction;
 	vec3 colour;
-};
-
-/*
- * Holds information about segments.
- * This will be filled with the maximum and minimum
- * points of the sprites these lights can interact with.
- */
-struct Segment
-{
-	vec2 vecMax;
-	vec2 vecMin;
+	float intensity;
+	float radius;
+	float angleSpread;
+	float angle;
+	bool dynamic;
 };
 
 // Function Prototypes.
-bool rayIntersect(vec2 point, Segment area);
+float calculateDistance(vec2 pointOne, vec2 pointTwo);
+vec4 shineLight(Light currentLight);
 
 // Variables to setup in the .cpp files.
 uniform sampler2D texture;
 uniform Light light;
-uniform Segment segment;
 uniform float time;
 
 /*
@@ -39,28 +47,34 @@ void main()
 {
 	vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
 	vec4 finalColour = pixel;
-	vec2 ray = light.position + (light.direction * time);
 	
-	if(rayIntersect(ray, segment))
-	{
-		finalColour += vec4(light.colour, 1.0f);
-	}
+	AmbientLight ambLight;
+	ambLight.colour = vec4(0.0f, 0.0f, 0.0f, 0.25f);
+	ambLight.intensity = 0.5f;
+
+	finalColour += ambLight.colour;
+	finalColour += shineLight(light);
+	finalColour.w *= (light.intensity * ambLight.intensity);
 
 	gl_FragColor = finalColour;
 }
 
-/*
- * Simple point to AABB collision check, helps to check if a ray point
- * has intersected with a target.
- * @param point the point to test against this segment.
- * @param area the segment to check if the point is inside.
- * @return bool if the point lies inside of the segment.
- */
-bool rayIntersect(vec2 point, Segment area)
+float calculateDistance(vec2 pointOne, vec2 pointTwo)
 {
-	return
-	(
-		(point.x >= area.vecMin.x && point.x <= area.vecMax.x) &&
-		(point.y >= area.vecMin.y && point.y <= area.vecMax.y)
-	);
+	float result = 0.0f;
+	float x = (pointTwo.x - pointOne.x) * (pointTwo.x - pointOne.x);
+	float y = (pointTwo.y - pointOne.y) * (pointTwo.y - pointOne.y);
+	result = sqrt(x + y);
+
+	return result;
+}
+
+vec4 shineLight(Light currentLight)
+{	
+	float dis = calculateDistance(currentLight.position, gl_FragCoord.xy);
+
+	if(currentLight.radius >= dis)										// This pixel is out of range.
+		return vec4(currentLight.colour, currentLight.intensity);
+	else if(currentLight.radius < dis)									// Otherwise, the pixel is in range of the light.
+		return vec4(0.0f, 0.0f, 0.0f, 0.0f);
 }

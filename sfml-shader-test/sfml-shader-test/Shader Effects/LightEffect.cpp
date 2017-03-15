@@ -35,13 +35,15 @@ bool LightEffect::onLoad()
 		// Calculating random colours.
 		sf::Color randColour;
 		randColour.r = 255;
-		randColour.g = 0;
-		randColour.b = 0;
+		randColour.g = 25;
+		randColour.b = 128;
 		//randColour.r = std::rand() % 255;
 		//randColour.g = std::rand() % 255;
 		//randColour.b = std::rand() % 255;
 
-		Light* light = new Light(randPosition, randColour);
+		Light* light = new Light(randPosition, randColour, 0.75f);
+		light->setDynamic(true);
+		light->setRadius(20.0f);
 		light->setupBulb();
 		_lights.push_back(light);
 	}
@@ -81,23 +83,14 @@ void LightEffect::onUpdate(float time, float x, float y)
 		// Accessing light values once so there are less calls to _lights[i] with each iteration.
 		const sf::Vector2f position(_lights[i]->position().x, _lights[i]->position().y);
 		const sf::Vector3f colour(_lights[i]->colour().r, _lights[i]->colour().g, _lights[i]->colour().b);
-		const float a = static_cast<float>(_lights[i]->colour().a);
 
 		_shader.setUniform("light.position", position);
-		_shader.setUniform("light.direction", sf::Vector2f(0.0f, 1.0f));
 		_shader.setUniform("light.colour", colour);
-	}
-
-	// Render each of the sprites with this lighting shader.
-	for (size_t i = 0; i < _sprites.size(); ++i)
-	{
-		sf::Vector3f pos(_sprites[i].getPosition().x, _sprites[i].getPosition().y, 1.0f);
-		sf::Vector2f dim(_sprites[i].getGlobalBounds().width, _sprites[i].getGlobalBounds().height);
-
-		sf::Vector2f vecMax(pos.x + dim.x, pos.y + dim.y);
-		sf::Vector2f vecMin(pos.x, pos.y);
-		_shader.setUniform("segment.vecMax", vecMax);
-		_shader.setUniform("segment.vecMin", vecMin);
+		_shader.setUniform("light.intensity", _lights[i]->intensity());
+		_shader.setUniform("light.radius", _lights[i]->radius());
+		_shader.setUniform("light.angleSpread", _lights[i]->angleSpread());
+		_shader.setUniform("light.angle", _lights[i]->angle());
+		_shader.setUniform("light.dynamic", _lights[i]->isDynamic());
 	}
 }
 

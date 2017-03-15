@@ -16,6 +16,7 @@ class Light
 		explicit Light() :
 			_position(sf::Vector3f(0.0f, 0.0f, 1.0f)),
 			_colour(sf::Color::White),
+			_intensity(1.0f),
 			_radius(0.0f),
 			_angleSpread(0.0f),
 			_angle(0.0f),
@@ -25,9 +26,10 @@ class Light
 		/*
 		 * Sets up the light with variable values.
 		 */
-		explicit Light(const sf::Vector3f newPosition, const sf::Color newColour) :
+		explicit Light(const sf::Vector3f newPosition, const sf::Color newColour, const float intensity = 1.0f) :
 			_position(newPosition),
 			_colour(newColour),
+			_intensity(intensity),
 			_radius(0.0f),
 			_angleSpread(0.0f),
 			_angle(0.0f),
@@ -54,7 +56,6 @@ class Light
 			_point.setPosition(_position.x, _position.y);
 		}
 
-		
 		/*
 		 * Allows us to set the position of the light.
 		 * @param value the new position.
@@ -66,6 +67,12 @@ class Light
 		 * @param value the new colour.
 		 */
 		inline void const setColour(const sf::Color value)		{ _colour = value; };
+
+		/*
+		 * Allows us to set the intensity of the light.
+		 * @param value the new intensity value.
+		 */
+		inline void const setIntensity(const float value)		{ _intensity = value; };
 
 		/*
 		 * Allows us to set the radius of the light.
@@ -110,6 +117,12 @@ class Light
 		inline sf::CircleShape& sprite()		{ return _point; }
 		
 		/*
+		 * Provides access to the intensity of the light.
+		 * @return const float the current light intensity.
+		 */
+		inline float const intensity()			{ return _intensity; }
+
+		/*
 		 * Provides access to the radius of the light.
 		 * @return const float the current light radius.
 		 */
@@ -131,12 +144,13 @@ class Light
 		 * Provides access to the dynamic state of the light.
 		 * @return const bool if the light is dynamic (can be changed) or static (cannot be changed).
 		 */
-		inline bool const is_dynamic()			{ return _dynamic; }
+		inline bool const isDynamic()			{ return _dynamic; }
 
 	private:
 		sf::Vector3f _position;
 		sf::Color _colour;
 		sf::CircleShape _point;
+		float _intensity;
 		float _radius;
 		float _angleSpread;
 		float _angle;
